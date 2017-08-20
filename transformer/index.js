@@ -3,7 +3,7 @@
  * Created by nsubbot on 02.08.17.
  * All rights reserved by Nikita Subbot ©
  */
-var log = require("../logger")(module);
+var log = require("../logger/logger")(module);
 
 function Transformer(name) {
     this.name = name;

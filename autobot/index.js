@@ -4,7 +4,7 @@
 var data_base = require('../data_base');
 var transformer = require('../transformer');
 var util = require('util');
-var log = require("../logger")(module);
+var log = require("../logger/logger")(module);
 
 function Autobot(name, planet, health, attack) {
     this.name = name;

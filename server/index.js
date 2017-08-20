@@ -12,35 +12,40 @@ var EventEmitter = require('events').EventEmitter;  //EventEmitter module
 var path = require('path');
 var fs = require('fs');
 var url = require('url');                           //Url parser module
-var room = require('./room');                       //Transformers room
+var room = require('./../room/index');                       //Transformers room
 
 //  Custom project node modules
-var decepticon = require('./decepticon');           //Decepticon class
-var autobot = require('./autobot');                 //Autobots class
-var error = require('./errors');
-var data_base = require("./data_base");
+var decepticon = require('./../decepticon/index');           //Decepticon class
+var autobot = require('./../autobot/index');                 //Autobots class
+var error = require('./../errors/index');
+var data_base = require("./../data_base/index");
 data_base.connect();
 
-var ROOT = __dirname + "/public";
 
-http.createServer(function (req, res) {
+var temp = __dirname.split("/server");
+temp.length = temp.length -1;
+var ROOT = temp + "/public";
+debugger;
+
+var server = new http.createServer(function (req, res) {
     var urlParsed = url.parse(req.url, true);
 
     switch (urlParsed.pathname) {
         case "/" :
-            var creationPath = "creation/index.html";
+            debugger;
+            var creationPath = "/creation/index.html";
             sendFileSave(creationPath, res);
             break;
         case "/creation" :
-            var creationPath = "creation/index.html";
+            var creationPath = "/creation/index.html";
             sendFileSave(creationPath, res);
             break;
         case "/transformers_room":
-            var transformersRoomPath = "transformers_room/index.html";
+            var transformersRoomPath = "/transformers_room/index.html";
             sendFileSave(transformersRoomPath, res);
             break;
         case "/battle":
-            var battlePath = "battle/index.html";
+            var battlePath = "/battle/index.html";
             sendFileSave(battlePath, res);
             break;
 
@@ -55,12 +60,29 @@ http.createServer(function (req, res) {
                     var content = req.read();
                     if(content != null)
                     body += content;
+                    if (body.length > 1e4) {
+                        res.statusCode = 413;
+                        log.error("big incoming file");
+                        res.end("u fucking bitch can't destroy my server")
+                    }
                 })
                 .on('end', function () {
-                    debugger;
-                    var transformer = JSON.parse(body);
-
-                    room.publish(transformer);
+                    try {
+                        var newTransformer = JSON.parse(body);
+                    } catch (exeption) {
+                        res.statusCode = 400;
+                        log.error("not falid json-file in input");
+                    }
+                    if(newTransformer.type == "Autobot"){
+                        var newAutobot = new autobot.Autobot(newTransformer.name, newTransformer.home_planet, newTransformer.attack, newTransformer.health);
+                        room.publish(newAutobot);
+                    } else if(newTransformer.type == "Decepticon") {
+                        var newDecepticon = new decepticon.Decepticon(newTransformer.name, newTransformer.home_planet, newTransformer.attack, newTransformer.health);
+                        room.publish(newDecepticon);
+                    } else {
+                        log.error("transformer type not supported");
+                        room.publish("not supported type");
+                    }
                     res.end('ok');
             });
             break;
@@ -94,7 +116,7 @@ http.createServer(function (req, res) {
     //         res.end("No transformers war here!");
     //     }
     // }
-}).listen(1707);
+});
 
 function sendFileSave(filePath, res) {
 
@@ -154,3 +176,5 @@ function sendFile(filePath, res) {
         res.end(content);
     })
 }
+
+module.exports = server;
