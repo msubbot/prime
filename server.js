@@ -7,11 +7,12 @@
 //  Existed node modules
 var http = require('http');                         //Http server
 var util = require('util');                         //Util module
-var log = require('winston');                     //Logger module
+var log = require('winston');                       //Logger module
 var EventEmitter = require('events').EventEmitter;  //EventEmitter module
 var path = require('path');
 var fs = require('fs');
 var url = require('url');                           //Url parser module
+var room = require('./room');                       //Transformers room
 
 //  Custom project node modules
 var decepticon = require('./decepticon');           //Decepticon class
@@ -20,57 +21,79 @@ var error = require('./errors');
 var data_base = require("./data_base");
 data_base.connect();
 
-//var server = new http.Server();     //EventEmitter
-//server.listen(1707, "localhost");
-
 var ROOT = __dirname + "/public";
 
 http.createServer(function (req, res) {
-
-
-    //console.log(req.method, req.url);
     var urlParsed = url.parse(req.url, true);
-    //console.log(urlParsed);
+
+    switch (urlParsed.pathname) {
+        case "/" :
+            var creationPath = "creation/index.html";
+            sendFileSave(creationPath, res);
+            break;
+        case "/creation" :
+            var creationPath = "creation/index.html";
+            sendFileSave(creationPath, res);
+            break;
+        case "/transformers_room":
+            var transformersRoomPath = "transformers_room/index.html";
+            sendFileSave(transformersRoomPath, res);
+            break;
+        case "/battle":
+            var battlePath = "battle/index.html";
+            sendFileSave(battlePath, res);
+            break;
 
 
-    //Transformers objects
-    if(urlParsed.pathname == "/transformers" && urlParsed.query.autobot && urlParsed.query.decepticon){
-        //var optimus = new autobot.Autobot(urlParsed.query.autobot, "Cibertrone", 5, 100);
-        //var megatrone = new decepticon.Decepticon(urlParsed.query.decepticon, "Cibertrone", 5, 100);
-        //debugger;
-        //log.info("transformers created");
+        case "/subscribe":
+            room.subscribe(req, res);
+            break;
+        case "/publish":
+            var body = "";
+            req
+                .on('readable', function () {
+                    var content = req.read();
+                    if(content != null)
+                    body += content;
+                })
+                .on('end', function () {
+                    debugger;
+                    var transformer = JSON.parse(body);
 
-        //inspect objects
-        //console.log(util.inspect(optimus));
-        //console.log(util.inspect(megatrone));
-        //console.log(util.inspect(bumblebee));
-
-        res.setHeader('Cache-control', 'no-cache');
-        var autobotAndDecepticonBattlePath = 'battle/index.html';
-        sendFileSave(autobotAndDecepticonBattlePath, res);
-    } else {
-        if(urlParsed.pathname == "/transformers" && (urlParsed.query.autobot || urlParsed.query.decepticon)) {
-            if(urlParsed.query.autobot){
-                debugger;
-                log.error('shit');
-                var autobotChar = new autobot.Autobot(urlParsed.query.autobot, 'Cibertrone', 5, 100);
-                var autobotOnlyPath = "only_autobot/index.html";
-                sendFileSave(autobotOnlyPath, res);
-                /*res.end('You need one more transformer to start battle!\n' + 'On battle platform only ' + autobotChar.name + "." + '\n' + 'And he is AUTOBOT!');*/
-            } else {
-                debugger;
-                var decepticonChar = new decepticon.Decepticon(urlParsed.query.decepticon, 'Cibertrone', 5, 100);
-                var decepticonOnlyPath = "only_decepticon/index.html";
-                sendFileSave(decepticonOnlyPath, res);
-                /*res.end('You need one more transformer to start battle!\n' + 'On battle platform only ' + decepticonChar.name + "." + "\n" + "And he is DECEPTICON!");*/
-            }
-        } else {
-            //TODO Check if-else circle - ?always execute this block?
-            log.error('trans not found here');
-            res.statusCode = 404;
-            res.end("No transformers war here!");
-        }
+                    room.publish(transformer);
+                    res.end('ok');
+            });
+            break;
     }
+
+    // Old war in 4 options: auto+dec / only auto / only dec / no one
+    // if(urlParsed.pathname == "/transformers" && urlParsed.query.autobot && urlParsed.query.decepticon){
+    //     res.setHeader('Cache-control', 'no-cache');
+    //     var autobotAndDecepticonBattlePath = 'battle/index.html';
+    //     sendFileSave(autobotAndDecepticonBattlePath, res);
+    // } else {
+    //     if(urlParsed.pathname == "/transformers" && (urlParsed.query.autobot || urlParsed.query.decepticon)) {
+    //         if(urlParsed.query.autobot){
+    //             debugger;
+    //             log.error('shit');
+    //             var autobotChar = new autobot.Autobot(urlParsed.query.autobot, 'Cibertrone', 5, 100);
+    //             var autobotOnlyPath = "only_autobot/index.html";
+    //             sendFileSave(autobotOnlyPath, res);
+    //             /*res.end('You need one more transformer to start battle!\n' + 'On battle platform only ' + autobotChar.name + "." + '\n' + 'And he is AUTOBOT!');*/
+    //         } else {
+    //             debugger;
+    //             var decepticonChar = new decepticon.Decepticon(urlParsed.query.decepticon, 'Cibertrone', 5, 100);
+    //             var decepticonOnlyPath = "only_decepticon/index.html";
+    //             sendFileSave(decepticonOnlyPath, res);
+    //             /*res.end('You need one more transformer to start battle!\n' + 'On battle platform only ' + decepticonChar.name + "." + "\n" + "And he is DECEPTICON!");*/
+    //         }
+    //     } else {
+    //         //TODO Check if-else circle - ?always execute this block?
+    //         log.error('trans not found here');
+    //         res.statusCode = 404;
+    //         res.end("No transformers war here!");
+    //     }
+    // }
 }).listen(1707);
 
 function sendFileSave(filePath, res) {
