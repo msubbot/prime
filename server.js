@@ -44,7 +44,7 @@ http.createServer(function (req, res) {
         //console.log(util.inspect(optimus));
         //console.log(util.inspect(megatrone));
         //console.log(util.inspect(bumblebee));
-
+    hello
         res.setHeader('Cache-control', 'no-cache');
         var autobotAndDecepticonBattlePath = 'battle/index.html';
         sendFileSave(autobotAndDecepticonBattlePath, res);
