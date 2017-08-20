@@ -25,7 +25,6 @@ var ROOT = __dirname + "/public";
 
 http.createServer(function (req, res) {
     var urlParsed = url.parse(req.url, true);
-<<<<<<< HEAD
 
     switch (urlParsed.pathname) {
         case "/" :
