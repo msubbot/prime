@@ -3,9 +3,9 @@
  * Created by nsubbot on 02.08.17.
  * All rights reserved by Nikita Subbot ©
  */
-var error = require("../errors");
+let error = require("../errors");
 
-var localization;
+let localization;
 exports.connect =  function () {
     localization = require('./transformer_localization_ru.json')
 };

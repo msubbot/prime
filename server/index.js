@@ -3,44 +3,46 @@
  */
 
 "use strict";
-
 //  Existed node modules
-var http = require('http');                         //Http server
-var util = require('util');                         //Util module
-var log = require('winston');                       //Logger module
-var EventEmitter = require('events').EventEmitter;  //EventEmitter module
-var path = require('path');
-var fs = require('fs');
-var url = require('url');                           //Url parser module
-var room = require('./room');                       //Transformers room
+let http = require('http');
+let util = require('util');
+let log = require('winston');
+let EventEmitter = require('events').EventEmitter;
+let path = require('path');
+let fs = require('fs');
+let url = require('url');
+let room = require('./../room/index');
 
 //  Custom project node modules
-var decepticon = require('./decepticon');           //Decepticon class
-var autobot = require('./autobot');                 //Autobots class
-var error = require('./errors');
-var data_base = require("./data_base");
+let decepticon = require('./../decepticon/index');
+let autobot = require('./../autobot/index');
+let error = require('./../errors/index');
+let data_base = require("./../data_base/index");
 data_base.connect();
 
-var ROOT = __dirname + "/public";
 
-http.createServer(function (req, res) {
-    var urlParsed = url.parse(req.url, true);
+let temp = __dirname.split("/server");
+temp.length = temp.length -1;
+let ROOT = temp + "/public";
+debugger;
+
+let server = new http.createServer(function (req, res) {
+    let urlParsed = url.parse(req.url, true);
 
     switch (urlParsed.pathname) {
         case "/" :
-            var creationPath = "creation/index.html";
+            let creationPath = "/creation/index.html";
             sendFileSave(creationPath, res);
             break;
         case "/creation" :
-            var creationPath = "creation/index.html";
             sendFileSave(creationPath, res);
             break;
         case "/transformers_room":
-            var transformersRoomPath = "transformers_room/index.html";
+            let transformersRoomPath = "/transformers_room/index.html";
             sendFileSave(transformersRoomPath, res);
             break;
         case "/battle":
-            var battlePath = "battle/index.html";
+            let battlePath = "/battle/index.html";
             sendFileSave(battlePath, res);
             break;
 
@@ -49,18 +51,35 @@ http.createServer(function (req, res) {
             room.subscribe(req, res);
             break;
         case "/publish":
-            var body = "";
+            let body = "";
             req
                 .on('readable', function () {
-                    var content = req.read();
+                    let content = req.read();
                     if(content != null)
                     body += content;
+                    if (body.length > 1e4) {
+                        res.statusCode = 413;
+                        log.error("big incoming file");
+                        res.end("u fucking bitch can't destroy my server")
+                    }
                 })
                 .on('end', function () {
-                    debugger;
-                    var transformer = JSON.parse(body);
-
-                    room.publish(transformer);
+                    try {
+                        let newTransformer = JSON.parse(body);
+                    } catch (exeption) {
+                        res.statusCode = 400;
+                        log.error("not falid json-file in input");
+                    }
+                    if(newTransformer.type === "Autobot"){
+                        let newAutobot = new autobot.Autobot(newTransformer.name, newTransformer.home_planet, newTransformer.attack, newTransformer.health);
+                        room.publish(newAutobot);
+                    } else if(newTransformer.type === "Decepticon") {
+                        let newDecepticon = new decepticon.Decepticon(newTransformer.name, newTransformer.home_planet, newTransformer.attack, newTransformer.health);
+                        room.publish(newDecepticon);
+                    } else {
+                        log.error("transformer type not supported");
+                        room.publish("not supported type");
+                    }
                     res.end('ok');
             });
             break;
@@ -94,7 +113,7 @@ http.createServer(function (req, res) {
     //         res.end("No transformers war here!");
     //     }
     // }
-}).listen(1707);
+});
 
 function sendFileSave(filePath, res) {
 
@@ -154,3 +173,5 @@ function sendFile(filePath, res) {
         res.end(content);
     })
 }
+
+module.exports = server;

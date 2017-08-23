@@ -3,12 +3,16 @@
  * Created by nsubbot on 20.08.17.
  * All rights reserved by Nikita Subbot ©
  */
-var util = require('util');
-var clients = [];
+let util = require('util');
+let clients = [];
 
 exports.subscribe = function (req, res) {
     console.log('subscribe');
     clients.push(res);
+
+    res.on('close', function () {
+        clients.splice(clients.indexOf(res), 1);
+    })
 };
 
 exports.publish = function (transformer) {
