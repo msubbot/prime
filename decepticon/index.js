@@ -1,10 +1,10 @@
 /**
  * Created by nsubbot on 02.08.17.
  */
-var data_base = require('../data_base');
-var transformer = require('../transformer');
-var util = require('util');
-var log = require("../logger/logger")(module);
+let data_base = require('../data_base');
+let transformer = require('../transformer');
+let util = require('util');
+let log = require("../logger/logger")(module);
 
 function Decepticon(name, planet, health, attack) {
     this.name = name;

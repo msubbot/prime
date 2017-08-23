@@ -1,4 +1,4 @@
-var util = require("util");
+let util = require("util");
 
 function LocalizationError(status, message) {
     this.status = status;
