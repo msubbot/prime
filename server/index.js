@@ -11,13 +11,13 @@ let EventEmitter = require('events').EventEmitter;
 let path = require('path');
 let fs = require('fs');
 let url = require('url');
-let room = require('./../room/index');
+let room = require('../custom_modules/transformers_room');
 
 //  Custom project node modules
-let decepticon = require('./../decepticon/index');
-let autobot = require('./../autobot/index');
-let error = require('./../errors/index');
-let data_base = require("./../data_base/index");
+let decepticon = require('../custom_modules/decepticon');
+let autobot = require('../custom_modules/autobot');
+let error = require('../custom_modules/errors');
+let data_base = require("../custom_modules/localization");
 data_base.connect();
 
 
