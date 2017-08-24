@@ -7,8 +7,8 @@
 var url=require('url');
 var log = require('winston');
 
-var autobot = require("../../../custom_modules/autobot");
-var decepticon = require("../../../custom_modules/decepticon");
+var autobot = require("../../custom_modules/autobot/index");
+var decepticon = require("../../custom_modules/decepticon/index");
 
 var urlParsed = url.parse(req.url, true);
 var optimus = new autobot.Autobot(urlParsed.query.autobot, "Cibertrone", 5, 100);
