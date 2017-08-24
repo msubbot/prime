@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Creation</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-</head>
-<body>
+<% layout('/layout/page')%>
+<% block('title', 'creation')%>
+
 <div class="container">
     <p>Create your own transformer!</p>
 
@@ -38,16 +30,16 @@
     };
 
     publish.onsubmit=function () {
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
         xhr.open("POST", "/publish", true);
-        var inputData = {
+        let inputData = {
             name: this.elements.name.value,
             type: this.elements.type.value,
             home_planet: this.elements.home_planet.value,
             attack: this.elements.attack.value,
             health: this.elements.health.value
         }
-        var newTransformer = new Transformer(inputData.name, inputData.home_planet, inputData.attack, inputData.health, inputData.type);
+        let newTransformer = new Transformer(inputData.name, inputData.home_planet, inputData.attack, inputData.health, inputData.type);
         xhr.send(JSON.stringify(newTransformer));
         this.elements.name.value =  "";
         this.elements.type.value =  "";
@@ -60,12 +52,12 @@
     subscribe();
 
     function subscribe() {
-        var xhr = new XMLHttpRequest();
+        let xhr = new XMLHttpRequest();
 
         xhr.open("GET", "subscribe", true);
 
         xhr.onload = function () {
-            var li = document.createElement("li");
+            let li = document.createElement("li");
             li.textContent = this.responseText;
             transformers.appendChild(li);
 
@@ -80,5 +72,3 @@
     }
 
 </script>
-</body>
-</html>

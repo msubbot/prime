@@ -6,17 +6,21 @@
 
 let http = require('http');
 let express = require('express');
-let log = require('winston');
 let url = require('url');
 let fs = require('fs');
 let path = require('path');
+let favicon = require('serve-favicon');
+let bodyParser = require('body-parser');
+let logger = require('morgan');
+
 
 // Custom modules
-let config = require('config');
 let decepticon = require('./custom_modules/decepticon');
 let autobot = require('./custom_modules/autobot');
-let error = require('./custom_modules/errors');
 let transformers_room = require('./custom_modules/transformers_room');
+let error = require('./custom_modules/errors');
+let config = require('config');
+let log = require('libs/log')(module);
 let localization = require("./custom_modules/localization");
 localization.connect();
 
@@ -24,65 +28,46 @@ localization.connect();
 let domain = require('domain');
 let serverDomain = domain.create();
 
-serverDomain.on('error', function (err) {
-    log.error("Domain catch error: %s", err);
-});
-
+//Root for sending files
 let ROOT = __dirname + "/templates";
+
+
+//Express connection
+let app = express();
+app.set('port', config.get('port'));
+
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+
+if(app.get('env') === 'development') {
+    app.use(logger('dev'));
+} else {
+    app.use(logger('default'))
+}
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// view engine setup
+app.engine('ejs', require('ejs-locals'));
+app.set('views', path.join(__dirname, 'templates'));
+app.set('view engine', 'ejs');
+
 
 serverDomain.run(function () {
 
-    //Old server connection
-    //var server = require('./server');
-    //server.listen(config.get('port'));
-
-    //Express connection
-    let app = express();
-    app.set('port', config.get('port'));
-
     http.createServer(app).listen(app.get('port'), function () {
-        console.log("Express server listening on port " + app.get('port'));
+        log.info("Express server listening on port " + app.get('port'));
     });
 
-    app.use(function (req, res, next) {
-        if(req.url === "/") {
-            let creationPath = "/creation/index.html";
-            sendFileSave(creationPath, res);
-        } else {
-            next();
-        }
-    });
+     let creation = require('./routes/creation');
+     //app.use('/', creation.route);
+     app.use('/creation', creation.route);
 
+    let transformers_room_lobby = require('./routes/transformers_room');
+    app.use('/transformers_room', transformers_room_lobby.route);
 
-    app.use(function (req, res, next) {
-        if(req.url === "/creation") {
-            let creationPath = "/creation/index.html";
-            sendFileSave(creationPath, res);
-        }
-        else {
-            next();
-        }
-    });
-
-    app.use(function (req, res, next) {
-        if(req.url === "/transformers_room") {
-            let transformersRoomPath = "/transformers_room/index.html";
-            sendFileSave(transformersRoomPath, res);
-        }
-        else {
-            next();
-        }
-    });
-
-    app.use(function (req, res, next) {
-        if(req.url === "/battle") {
-            let battlePath = "/battle/index.html";
-            sendFileSave(battlePath, res);
-        }
-        else {
-            next();
-        }
-    });
+    let battle = require('./routes/battle');
+    app.use('/battle', battle.route);
 
     app.use(function (req, res, next) {
         if(req.url === "/subscribe") {
@@ -95,13 +80,13 @@ serverDomain.run(function () {
 
     app.use(function (req, res, next) {
         if(req.url === "/publish") {
-            let body = "";
+            let bodyTemp = "";
             req
                 .on('readable', function () {
                     let content = req.read();
                     if (content != null)
-                        body += content;
-                    if (body.length > 1e4) {
+                        bodyTemp += content;
+                    if (bodyTemp.length > 1e4) {
                         res.statusCode = 413;
                         log.error("big incoming file");
                         res.end("u fucking bitch can't destroy my server")
@@ -109,7 +94,7 @@ serverDomain.run(function () {
                 })
                 .on('end', function () {
                     try {
-                        var newTransformer = JSON.parse(body);
+                        var newTransformer = JSON.parse(bodyTemp);
                     } catch (exeption) {
                         res.statusCode = 400;
                         log.error("not falid json-file in input");
@@ -131,6 +116,10 @@ serverDomain.run(function () {
             next();
         }
     });
+});
+
+serverDomain.on('error', function (err) {
+    log.error("Domain catch error: %s", err);
 });
 
 function sendFileSave(filePath, res) {
