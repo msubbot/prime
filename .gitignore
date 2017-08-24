@@ -56,4 +56,6 @@ fabric.properties
 .idea/misc.xml
 .idea/typescript-compiler.xml
 .idea/watcherTasks.xml
-custom_modules/
+
+# bower components
+/public/vendor

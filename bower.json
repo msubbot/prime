@@ -1,0 +1,23 @@
+{
+  "name": "transformers",
+  "description": "Arena battle",
+  "main": "app.js",
+  "authors": [
+    "Nikita Subbot"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "bootstrap": "^3.3.7"
+  }
+}

@@ -2,23 +2,23 @@
  * Created by nsubbot on 02.08.17.
  */
 
+//Old server connection
+
 "use strict";
 //  Existed node modules
 let http = require('http');
-let util = require('util');
 let log = require('winston');
-let EventEmitter = require('events').EventEmitter;
 let path = require('path');
 let fs = require('fs');
 let url = require('url');
-let room = require('../custom_modules/transformers_room');
+let room = require('../transformers_room/index');
 
 //  Custom project node modules
-let decepticon = require('../custom_modules/decepticon');
-let autobot = require('../custom_modules/autobot');
-let error = require('../custom_modules/errors');
-let data_base = require("../custom_modules/localization");
-data_base.connect();
+let decepticon = require('../decepticon/index');
+let autobot = require('../autobot/index');
+let error = require('../errors/index');
+let localization = require("../localization/index");
+localization.connect();
 
 
 let temp = __dirname.split("/server");
@@ -55,8 +55,8 @@ let server = new http.createServer(function (req, res) {
             req
                 .on('readable', function () {
                     let content = req.read();
-                    if(content != null)
-                    body += content;
+                    if (content != null)
+                        body += content;
                     if (body.length > 1e4) {
                         res.statusCode = 413;
                         log.error("big incoming file");
@@ -70,10 +70,10 @@ let server = new http.createServer(function (req, res) {
                         res.statusCode = 400;
                         log.error("not falid json-file in input");
                     }
-                    if(newTransformer.type === "Autobot"){
+                    if (newTransformer.type === "Autobot") {
                         let newAutobot = new autobot.Autobot(newTransformer.name, newTransformer.home_planet, newTransformer.attack, newTransformer.health);
                         room.publish(newAutobot);
-                    } else if(newTransformer.type === "Decepticon") {
+                    } else if (newTransformer.type === "Decepticon") {
                         let newDecepticon = new decepticon.Decepticon(newTransformer.name, newTransformer.home_planet, newTransformer.attack, newTransformer.health);
                         room.publish(newDecepticon);
                     } else {
@@ -81,38 +81,9 @@ let server = new http.createServer(function (req, res) {
                         room.publish("not supported type");
                     }
                     res.end('ok');
-            });
+                });
             break;
     }
-
-    // Old war in 4 options: auto+dec / only auto / only dec / no one
-    // if(urlParsed.pathname == "/transformers" && urlParsed.query.autobot && urlParsed.query.decepticon){
-    //     res.setHeader('Cache-control', 'no-cache');
-    //     var autobotAndDecepticonBattlePath = 'battle/index.html';
-    //     sendFileSave(autobotAndDecepticonBattlePath, res);
-    // } else {
-    //     if(urlParsed.pathname == "/transformers" && (urlParsed.query.autobot || urlParsed.query.decepticon)) {
-    //         if(urlParsed.query.autobot){
-    //             debugger;
-    //             log.error('shit');
-    //             var autobotChar = new autobot.Autobot(urlParsed.query.autobot, 'Cibertrone', 5, 100);
-    //             var autobotOnlyPath = "only_autobot/index.html";
-    //             sendFileSave(autobotOnlyPath, res);
-    //             /*res.end('You need one more transformer to start battle!\n' + 'On battle platform only ' + autobotChar.name + "." + '\n' + 'And he is AUTOBOT!');*/
-    //         } else {
-    //             debugger;
-    //             var decepticonChar = new decepticon.Decepticon(urlParsed.query.decepticon, 'Cibertrone', 5, 100);
-    //             var decepticonOnlyPath = "only_decepticon/index.html";
-    //             sendFileSave(decepticonOnlyPath, res);
-    //             /*res.end('You need one more transformer to start battle!\n' + 'On battle platform only ' + decepticonChar.name + "." + "\n" + "And he is DECEPTICON!");*/
-    //         }
-    //     } else {
-    //         //TODO Check if-else circle - ?always execute this block?
-    //         log.error('trans not found here');
-    //         res.statusCode = 404;
-    //         res.end("No transformers war here!");
-    //     }
-    // }
 });
 
 function sendFileSave(filePath, res) {
