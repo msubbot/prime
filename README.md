@@ -3,7 +3,9 @@
 
 Download all required modules.
 > npm install
+
 Download all required library's.
 > bower install
+
 Start project.
 > node start

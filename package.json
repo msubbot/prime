@@ -1,6 +1,6 @@
 {
   "name": "transformers",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Arena battle",
   "main": "server.js",
   "dependencies": {
