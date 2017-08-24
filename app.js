@@ -17,6 +17,8 @@ serverDomain.on('error', function (err) {
     log.error("Domain catch error: %s", err);
 });
 
+//lolkek cheburek
+
 serverDomain.run(function () {
     var server = require('./server');
     server.listen(config.get('port'));
