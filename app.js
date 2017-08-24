@@ -59,9 +59,12 @@ serverDomain.run(function () {
         log.info("Express server listening on port " + app.get('port'));
     });
 
-     let creation = require('./routes/creation');
-     //app.use('/', creation.route);
-     app.use('/creation', creation.route);
+    //TODO fix /menu
+    //let index = require('./routes/index');
+    //app.use('/', index.route);
+
+    let creation = require('./routes/creation');
+    app.use('/creation', creation.route);
 
     let transformers_room_lobby = require('./routes/transformers_room');
     app.use('/transformers_room', transformers_room_lobby.route);
