@@ -79,12 +79,20 @@ serverDomain.run(function () {
         }
     });
 
-    // app.post("/create", function (req, res) {
-    //     let urlParsed = bodyParser.parse(req.url, true);
-    //     if(!req.body) res.sendStatus(400)
-    //     console.log(req.body);
-    // });
+    let Transformer = require('./models/transformer').Transformer;
+    app.get('/transformers', function (req, res, next) {
+        Transformer.find({}, function (err, transformers) {
+          if(err) return next(err);
+          res.json(transformers);
+        })
+    });
 
+    app.get('/transformer/:id', function (req, res, next) {
+        Transformer.findById(req.params.id, function (err, transformer) {
+            if(err) return next(err);
+            res.json(transformer);
+        })
+    });
 
     app.use(function (req, res, next) {
         if(req.url === "/publish") {
