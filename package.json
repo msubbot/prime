@@ -4,6 +4,7 @@
   "description": "Arena battle",
   "main": "server.js",
   "dependencies": {
+    "async": "^2.5.0",
     "bluebird": "^3.5.0",
     "body-parser": "~1.17.1",
     "debug": "~2.6.3",

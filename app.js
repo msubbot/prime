@@ -3,7 +3,6 @@
  * Created by nsubbot on 20.08.17.
  * All rights reserved by Nikita Subbot ©
  */
-
 let http = require('http');
 let express = require('express');
 let url = require('url');
@@ -31,7 +30,6 @@ let serverDomain = domain.create();
 //Root for sending files
 let ROOT = __dirname + "/templates";
 
-
 //Express connection
 let app = express();
 app.set('port', config.get('port'));
@@ -41,7 +39,7 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 if(app.get('env') === 'development') {
     app.use(logger('dev'));
 } else {
-    app.use(logger('default'))
+    app.use(logger('default'));
 }
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -94,7 +92,7 @@ serverDomain.run(function () {
             req
                 .on('readable', function () {
                     let content = req.read();
-                    if (content != null)
+                    if (content !== null)
                         bodyTemp += content;
                     if (bodyTemp.length > 1e4) {
                         res.statusCode = 413;
