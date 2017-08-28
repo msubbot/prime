@@ -4,11 +4,12 @@
 <div class="container">
     <p>Create your own transformer!</p>
 
-    <form id="publish" class="form-inline">
+    <form id="publish" class="form-inline" action="/create">
         <ul>
+            <li>Owner (enter your name): <input type="text" name="owner"></li>
             <li>Name: <input type="text" name="name"/></li>
-            <li>Autobot/Decepticon: <input type="text" name="type"/> </li>
-            <li>Home Planet: <input type="text" name="home_planet"/> </li>
+            <li><input type="radio" name="type" value="Autobot">Autobot <input type="radio" name="type" value="Decepticon">Decepticon</p></li>
+            <li>Home Planet: <input type="text" name="homePlanet"/> </li>
             <li>Attack: <input type="text" name="attack"/></li>
             <li>Health: <input type="text" name="health"/></li>
             <input type="submit" class="btn btn-primary" value="Create"/>
@@ -21,7 +22,11 @@
 </div>
 <script>
 
-    function Transformer(name, planet, health, attack, type) {
+    //let Transformer = require("models/transformer").Transformer;
+
+
+    function Transformer(owner, name, planet, health, attack, type) {
+        this.owner = owner;
         this.name = name;
         this.homePlanet = planet;
         this.health = health;
@@ -33,17 +38,22 @@
         let xhr = new XMLHttpRequest();
         xhr.open("POST", "/publish", true);
         let inputData = {
+            owner: this.elements.owner.value,
             name: this.elements.name.value,
             type: this.elements.type.value,
-            home_planet: this.elements.home_planet.value,
+            home_planet: this.elements.homePlanet.value,
             attack: this.elements.attack.value,
             health: this.elements.health.value
-        }
-        let newTransformer = new Transformer(inputData.name, inputData.home_planet, inputData.attack, inputData.health, inputData.type);
+        };
+//        newTransformer.save(function (err, newTransformer, affected) {
+//            console.log(arguments);
+//        });
+        let newTransformer = new Transformer(inputData.owner, inputData.name, inputData.home_planet, inputData.attack, inputData.health, inputData.type);
         xhr.send(JSON.stringify(newTransformer));
+        this.elements.owner.value = "";
         this.elements.name.value =  "";
         this.elements.type.value =  "";
-        this.elements.home_planet.value =  "";
+        this.elements.homePlanet.value =  "";
         this.elements.attack.value =  "";
         this.elements.health.value =  "";
         return false;

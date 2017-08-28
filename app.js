@@ -81,6 +81,13 @@ serverDomain.run(function () {
         }
     });
 
+    // app.post("/create", function (req, res) {
+    //     let urlParsed = bodyParser.parse(req.url, true);
+    //     if(!req.body) res.sendStatus(400)
+    //     console.log(req.body);
+    // });
+
+
     app.use(function (req, res, next) {
         if(req.url === "/publish") {
             let bodyTemp = "";
@@ -103,10 +110,10 @@ serverDomain.run(function () {
                         log.error("not falid json-file in input");
                     }
                     if (newTransformer.type === "Autobot") {
-                        let newAutobot = new autobot.Autobot(newTransformer.name, newTransformer.home_planet, newTransformer.attack, newTransformer.health);
+                        let newAutobot = new autobot.Autobot(newTransformer.owner, newTransformer.name, newTransformer.homePlanet, newTransformer.attack, newTransformer.health);
                         transformers_room.publish(newAutobot);
                     } else if (newTransformer.type === "Decepticon") {
-                        let newDecepticon = new decepticon.Decepticon(newTransformer.name, newTransformer.home_planet, newTransformer.attack, newTransformer.health);
+                        let newDecepticon = new decepticon.Decepticon(newTransformer.owner, newTransformer.name, newTransformer.homePlanet, newTransformer.attack, newTransformer.health);
                         transformers_room.publish(newDecepticon);
                     } else {
                         log.error("transformer type not supported");
