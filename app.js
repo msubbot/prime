@@ -11,6 +11,7 @@ let path = require('path');
 let favicon = require('serve-favicon');
 let bodyParser = require('body-parser');
 let logger = require('morgan');
+let util = require('util');
 
 
 // Custom modules
@@ -22,6 +23,9 @@ let config = require('config');
 let log = require('libs/log')(module);
 let localization = require("./custom_modules/localization");
 localization.connect();
+
+//  Express models
+let Transformer = require("./models/transformer").Transformer;
 
 // Domain module
 let domain = require('domain');
@@ -84,7 +88,7 @@ serverDomain.run(function () {
         Transformer.find({}, function (err, transformers) {
           if(err) return next(err);
           res.json(transformers);
-        })
+        });
     });
 
     app.get('/transformer/:id', function (req, res, next) {
@@ -92,6 +96,22 @@ serverDomain.run(function () {
             if(err) return next(err);
             res.json(transformer);
         })
+    });
+
+    app.get('/create', function (req, res, next) {
+        let urlParsed = url.parse(req.url, true);
+        let newTransformer = new Transformer({
+            owner: urlParsed.query.owner,
+            name: urlParsed.query.name,
+            type: urlParsed.query.type,
+            home_planet: urlParsed.query.home_planet,
+            attack: urlParsed.query.attack,
+            health: urlParsed.query.health
+        });
+        newTransformer.save(function (req, newTransformer, affected) {
+            console.log(arguments);
+        });
+        res.json(newTransformer);
     });
 
     app.use(function (req, res, next) {
@@ -181,17 +201,17 @@ function sendFileSave(filePath, res) {
             throw new error.NotSaveSandingFile(404, "Requested files not exist.")
             return;
         }
-    })
+    });
 
     sendFile(filePath, res);
-};
+}
 
 function sendFile(filePath, res) {
 
     fs.readFile(filePath, function (err, content) {
         if (err)
             throw new error.NotSaveSandingFile(404, "Incorrect path of directory");
-        var mime = require('mime').lookup(filePath);
+        let mime = require('mime').lookup(filePath);
         res.setHeader('Content-Type', mime + "; charset=utf-8");
         res.end(content);
     })
