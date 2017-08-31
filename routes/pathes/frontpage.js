@@ -4,8 +4,6 @@
  * All rights reserved by Nikita Subbot ©
  */
 
-module.exports = function (app) {
-    app.use('/',function (req, res, next) {
-        res.render('frontpage');
-    });
+exports.get = function(req, res) {
+    res.render('frontpage');
 };

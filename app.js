@@ -55,6 +55,8 @@ app.use(session ({
     store: mongoose_store
 }));
 
+app.use(require('./middleware/loadUser'));
+
 require("routes")(app);
 
 serverDomain.run(function () {

@@ -4,8 +4,6 @@
  * All rights reserved by Nikita Subbot ©
  */
 
-
-let path = require('path');
 let util = require('util');
 let http = require('http');
 

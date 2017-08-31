@@ -12,8 +12,7 @@
 
 module.exports = function (app) {
 
-    //TODO FIX / PRIMARY
-    //let frontpage = require('./pathes/frontpage')(app);
+    app.get('/', require('./pathes/frontpage').get);
 
     let creation = require('./pathes/creation')(app);
 
@@ -27,4 +26,5 @@ module.exports = function (app) {
 
     let login = require('./pathes/login')(app);
 
+    let logout = require('./pathes/logout')(app)
 };
