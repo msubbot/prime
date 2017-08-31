@@ -6,8 +6,6 @@
 
 module.exports = function (app) {
     app.use('/creation',function (req, res, next) {
-        res.render('creation', {
-            name: 'creation optimus'
-        });
+        res.render('creation');
     });
 };
