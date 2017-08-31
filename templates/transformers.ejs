@@ -1,0 +1,11 @@
+<% layout('/layout/page')%>
+<% block('title', 'All transformers')%>
+
+<div class="container">
+    <p>Transformers exist: </p>
+    <ul id="transformers">
+
+            <li><%= JSON.stringify(data) %></li>
+
+    </ul>
+</div>

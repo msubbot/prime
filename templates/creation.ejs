@@ -2,73 +2,25 @@
 <% block('title', 'creation')%>
 
 <div class="container">
-    <p>Create your own transformer!</p>
+    <p>Create your own transformer, <%=user.get('username')%>!</p>
 
-    <form id="publish" class="form-inline">
+    <form id="create" class="form-inline" action="/create">
         <ul>
+            <li>Owner (enter your name): <input type="text" name="owner"></li>
             <li>Name: <input type="text" name="name"/></li>
-            <li>Autobot/Decepticon: <input type="text" name="type"/> </li>
-            <li>Home Planet: <input type="text" name="home_planet"/> </li>
+            <li><input type="radio" name="type" value="Autobot">Autobot <input type="radio" name="type" value="Decepticon">Decepticon</p></li>
+            <li>Home Planet: <input type="text" name="homePlanet"/> </li>
             <li>Attack: <input type="text" name="attack"/></li>
             <li>Health: <input type="text" name="health"/></li>
             <input type="submit" class="btn btn-primary" value="Create"/>
         </ul>
     </form>
 </div>
-<div class="container">
-    <p>Transformers exist: </p>
-    <ul id="transformers"></ul>
-</div>
+
 <script>
-
-    function Transformer(name, planet, health, attack, type) {
-        this.name = name;
-        this.homePlanet = planet;
-        this.health = health;
-        this.attack  = attack;
-        this.type = type;
-    };
-
-    publish.onsubmit=function () {
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/publish", true);
-        let inputData = {
-            name: this.elements.name.value,
-            type: this.elements.type.value,
-            home_planet: this.elements.home_planet.value,
-            attack: this.elements.attack.value,
-            health: this.elements.health.value
-        }
-        let newTransformer = new Transformer(inputData.name, inputData.home_planet, inputData.attack, inputData.health, inputData.type);
-        xhr.send(JSON.stringify(newTransformer));
-        this.elements.name.value =  "";
-        this.elements.type.value =  "";
-        this.elements.home_planet.value =  "";
-        this.elements.attack.value =  "";
-        this.elements.health.value =  "";
-        return false;
-    };
-
-    subscribe();
-
-    function subscribe() {
-        let xhr = new XMLHttpRequest();
-
-        xhr.open("GET", "subscribe", true);
-
-        xhr.onload = function () {
-            let li = document.createElement("li");
-            li.textContent = this.responseText;
-            transformers.appendChild(li);
-
-            subscribe();
-        };
-
-        xhr.onerror = xhr.onabort = function () {
-            setTimeout(subscribe, 500);
-        };
-
-        xhr.send('');
-    }
-
+//    create.onsubmit = function () {
+//        let xhr = new XMLHttpRequest();
+//        xhr.open('GET', '/create', true);
+//        xhr.send();
+//    }
 </script>

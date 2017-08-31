@@ -1,3 +1,20 @@
 {
-  "port" : 1707
+  "port" : 1707,
+  "mongoose": {
+    "uri": "mongodb://localhost/transformers",
+    "options" : {
+      "socketOptions" : {
+        "keepAlive" : 1
+      }
+    }
+  },
+  "session" : {
+    "secret" : "subSecret",
+    "key" : "sid",
+    "cookie": {
+      "path": "/",
+      "httpOnly": true,
+      "maxAge": null
+    }
+  }
 }

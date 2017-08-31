@@ -10,8 +10,21 @@
  * All rights reserved by Nikita Subbot ©
  */
 
-exports.route = function (req, res, next) {
-    res.render('index', {
-        name: 'Optimus'
-    });
+module.exports = function (app) {
+
+    app.get('/', require('./pathes/frontpage').get);
+
+    let creation = require('./pathes/creation')(app);
+
+    let transformers = require('./pathes/transformers')(app);
+
+    let transformer = require('./pathes/transformer')(app);
+
+    let battle = require('./pathes/battle')(app);
+
+    let create = require('./pathes/create')(app);
+
+    let login = require('./pathes/login')(app);
+
+    let logout = require('./pathes/logout')(app)
 };
