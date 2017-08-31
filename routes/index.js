@@ -12,14 +12,19 @@
 
 module.exports = function (app) {
 
-    let creation = require('./creation')(app);
+    //TODO FIX / PRIMARY
+    //let frontpage = require('./pathes/frontpage')(app);
 
-    let transformers = require('./transformers')(app);
+    let creation = require('./pathes/creation')(app);
 
-    let battle = require('./battle')(app);
+    let transformers = require('./pathes/transformers')(app);
 
-    let create = require('./create')(app);
+    let transformer = require('./pathes/transformer')(app);
 
-    let transformer = require('./transformer')(app);
+    let battle = require('./pathes/battle')(app);
+
+    let create = require('./pathes/create')(app);
+
+    let login = require('./pathes/login')(app);
 
 };

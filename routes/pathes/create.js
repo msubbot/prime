@@ -5,7 +5,7 @@
  */
 
 let url = require("url");
-let Transformer = require('../models/transformer').Transformer;
+let Transformer = require('../../models/transformer').Transformer;
 
 module.exports = function (app) {
     app.get('/create', function (req, res, next) {

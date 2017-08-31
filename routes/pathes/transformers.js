@@ -4,7 +4,7 @@
  * All rights reserved by Nikita Subbot ©
  */
 
-let Transformer = require('../models/transformer').Transformer;
+let Transformer = require('../../models/transformer').Transformer;
 
 
 module.exports = function (app) {
