@@ -10,6 +10,11 @@ let path = require('path');
 let favicon = require('serve-favicon');
 let bodyParser = require('body-parser');
 let logger = require('morgan');
+let cookieParser = require('cookie-parser');
+let session = require('express-session');
+let MongoStore = require('connect-mongo')(session);
+let mongoose = require('libs/mongoose');
+let mongoose_store = new MongoStore({mongooseConnection: mongoose.connection});
 
 
 // Custom modules
@@ -25,7 +30,6 @@ let serverDomain = require('domain').create();
 //Express connection
 let app = express();
 
-require("routes")(app);
 app.set('port', config.get('port'));
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -37,12 +41,21 @@ if(app.get('env') === 'development') {
 }
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.engine('ejs', require('ejs-locals'));
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'ejs');
 
+app.use(session ({
+    secret: config.get("session:secret"),
+    key: config.get("session:key"),
+    cookie: config.get("session:cookie"),
+    store: mongoose_store
+}));
+
+require("routes")(app);
 
 serverDomain.run(function () {
 
