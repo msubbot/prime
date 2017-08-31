@@ -10,8 +10,16 @@
  * All rights reserved by Nikita Subbot ©
  */
 
-exports.route = function (req, res, next) {
-    res.render('index', {
-        name: 'Optimus'
-    });
+module.exports = function (app) {
+
+    let creation = require('./creation')(app);
+
+    let transformers = require('./transformers')(app);
+
+    let battle = require('./battle')(app);
+
+    let create = require('./create')(app);
+
+    let transformer = require('./transformer')(app);
+
 };

@@ -4,21 +4,10 @@
  * All rights reserved by Nikita Subbot ©
  */
 
-
-// ejs version
-// let express = require('express');
-// let router = express.Router();
-
-// router.get('/', function(req, res, next) {
-//     res.render('battle', {
-//         name: 'Optimus'
-//     });
-// });
-//
-// module.exports = router;
-
-exports.route = function (req, res, next) {
-    res.render('battle', {
-        name: 'Optimus'
+module.exports = function (app) {
+    app.use('/battle',function (req, res, next) {
+        res.render('battle', {
+            name: 'battle optimus'
+        });
     });
 };

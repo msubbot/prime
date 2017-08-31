@@ -4,8 +4,10 @@
  * All rights reserved by Nikita Subbot ©
  */
 
-exports.route = function (req, res, next) {
-    res.render('creation', {
-        name: 'Optimus'
+module.exports = function (app) {
+    app.use('/creation',function (req, res, next) {
+        res.render('creation', {
+            name: 'creation optimus'
+        });
     });
 };
