@@ -1,30 +1,28 @@
 <% layout('/layout/page')%>
 <% block('title', 'Registration and authorization.')%>
 
-<p>Enter in your account, if it's not created, it will be.</p>
-
-<form class="form-horizontal login-form" name="login-form">
-    <div class="form-group">
-        <label for="input-username" class="col-lg-2 control-label">Username</label>
-
-        <div class="col-lg-10">
-            <input name="username" value="name" type="text" class="form-control" id="input-username" placeholder="Имя">
-        </div>
+<div class="row justify-content-md-center">
+    <div class="col-20 col-md-auto">
+        <form class="form-horizontal login-form" name="login-form">
+            <div class="form-group ">
+                <div class="col-lg-10">
+                    <input name="username"  type="text" class="form-control" id="input-username" placeholder="Username...">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-10">
+                    <input name="password" type="password" class="form-control" id="input-password" placeholder="Password...">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-10 text-center">
+                    <button type="submit" class="btn btn-success" data-loading-text="Sending...">Login</button>
+                    <span class="help-block error"></span>
+                </div>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label for="input-password" class="col-lg-2 control-label">Password</label>
-
-        <div class="col-lg-10">
-            <input name="password" value="pass" type="password" class="form-control" id="input-password" placeholder="Пароль">
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-lg-offset-2 col-lg-10">
-            <button type="submit" class="btn btn-primary" data-loading-text="Отправляю...">Войти</button>
-            <span class="help-block error"></span>
-        </div>
-    </div>
-</form>
+</div>
 
 <script>
     $(document.forms['login-form']).on('submit', function () {
@@ -42,7 +40,7 @@
             },
             statusCode: {
                 200: function () {
-                    form.html('Вы вошли на сайт').addClass('alert-success');
+                    form.html('You login already!').addClass('alert-success');
                     window.location.href = '/creation';
                 },
                 403: function (jqXHR) {

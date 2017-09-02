@@ -31,47 +31,52 @@
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="/">ARENA</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+    <div class="container">
+        <a class="navbar-brand" href="/">ARENA</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-            <% if (user) {%>
-            <li class="nav-item">
-                <a class="nav-link" href="/creation">Creation <span class="sr-only">(current)</span></a>
-            </li>
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <% if (user) {%>
+                <li class="nav-item">
+                    <a class="nav-link" href="/creation">Creation <span class="sr-only">(current)</span></a>
+                </li>
+                <% } %>
+                <li class="nav-item">
+                    <a class="nav-link" href="/transformers">Transformers</a>
+                </li>
+                <% if (user) {%>
+                <li class="nav-item">
+                    <a class="nav-link" href="/battle">Battle</a>
+                </li>
+                <% } %>
+            </ul>
+            <!--<form class="form-inline my-2 my-lg-0">-->
+                <!--<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">-->
+                <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
+            <!--</form>-->
+            <% if (user) { %>
+            <h4 class="omega"> <%=user.username%></h4>
+            <a class="btn btn-danger" href="" onclick="$(document.body).append($('<form method=POST action=/logout>'));$('form').submit();return false">Logout</a>
+            <% } else { %>
+            <a class="btn btn-success"  href="/login">Login</a>
             <% } %>
-            <li class="nav-item">
-                <a class="nav-link" href="/transformers">Transformers room</a>
-            </li>
-            <% if (user) {%>
-            <li class="nav-item">
-                <a class="nav-link" href="/battle">Battle</a>
-            </li>
-            <% } %>
-        </ul>
-        <!--<form class="form-inline my-2 my-lg-0">-->
-            <!--<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">-->
-            <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
-        <!--</form>-->
-        <ul class="nav navbar-nav navbar-right"></ul>
-        <% if (user) { %>
-        <li><a class="btn btn-outline-success" href="" onclick="$(document.body).append($('<form method=POST action=/logout>'));$('form').submit();return false">Выйти</a></li>
-        <% } else { %>
-        <li><a class="btn btn-outline-success"  href="/login">Login</a></li>
-        <% } %>
+        </div>
     </div>
 </nav>
 
 <!-- Page Content -->
-<div class="container">
-    <h1 class="mt-5"><%=blocks.title%></h1>
+<div class="container text-center">
+        <div class="container">
+            <div class="mt-4">
+                <h1><%=blocks.title%></h1>
+            </div>
+        </div>
 </div>
     <div class="container">
         <%- body %>
     </div>
 </body>
-
 </html>

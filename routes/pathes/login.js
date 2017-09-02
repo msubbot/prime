@@ -5,7 +5,7 @@
  */
 let User = require('../../models/user').User;
 let async = require('async');
-let HttpError = require('../../error');
+let HttpError = require('../../error').HttpError;
 let AuthError = require('../../models/user').AuthError;
 
 module.exports = function (app) {
