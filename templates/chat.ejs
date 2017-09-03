@@ -7,33 +7,59 @@
     <form class="form-horizontal mb-4">
         <input class="form-control" autocomplete="off" placeholder="Message...">
     </form>
-    <ul></ul>
+    <ul class="list-unstyled"></ul>
 </div>
 
 <script>
 
-    let socket = io();
+    let socket = io('', {
+      reconnect: false
+    });
 
+    let input = $('#room input');
     let form = $('#room form');
     let ul = $('#room ul');
 
 
-    socket.on('message', function (text) {
-        console.log(text);
-        $('<li>', {text: text}).prependTo(ul);
-    });
+    socket
+        .on('message', function (text) {
+            printMessage(text)
+        })
+        .on('connect', function () {
+            printStatus('Connection establishing.');
+            form.on('submit', sendMessage);
+            input.prop('disabled', false);
+        })
+        .on('disconnect', function () {
+            printStatus('Connection failed.');
+            form.on('submit', sendMessage());
+            input.prop('disabled', true);
+            setTimeout(reconnect(), 1000);
+        })
 
-    form.submit(function () {
-        let input = $(this).find(':input');
-        let text = input.val();
-        input.val('');
-
-        socket.emit('message', text, function (data) {
-            alert(data);
-            $('<li>', {text: text}).prependTo(ul);
+    function reconnect () {
+        socket.once('connect_error', function () {
+            setTimeout(reconnect, 1000);
         });
+        socket.connect();
+    }
 
-        return false;
-    });
+    function sendMessage() {
+          let text = input.val();
+          socket.emit('message', text, function () {
+            printMessage(text);
+          });
 
+          input.val('');
+          return false;
+    }
+
+
+    function printMessage (text) {
+        $('<li>', {text: text}).prependTo(ul);
+    }
+
+    function printStatus (status) {
+        $('<li>').append($('<i>').text(status)).prependTo(ul);
+    }
 </script>
