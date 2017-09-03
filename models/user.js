@@ -75,6 +75,8 @@ schema.statics.authorize = function (username, password, callback) {
 
 exports.User = mongoose.model('User', schema);
 
+
+//TODO replace error
 let util = require('util');
 let http = require('http');
 

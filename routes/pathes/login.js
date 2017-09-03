@@ -20,7 +20,7 @@ module.exports = function (app) {
        User.authorize(username, password, function (err, user) {
            if(err) {
                if (err instanceof AuthError) {
-                   return next(new HttpError(403, err.message));
+                   return next(new HttpError(403, err));
                } else {
                    return next(err);
                }

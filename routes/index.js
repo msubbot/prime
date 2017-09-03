@@ -14,6 +14,8 @@ module.exports = function (app) {
 
     app.get('/', require('./pathes/frontpage').get);
 
+    let chat = require('./pathes/chat')(app);
+
     let creation = require('./pathes/creation')(app);
 
     let transformers = require('./pathes/transformers')(app);

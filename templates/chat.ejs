@@ -1,0 +1,39 @@
+<% layout('/layout/page')%>
+<% block('title', 'Chat')%>
+
+<script src="/vendor/socket.io-client/dist/socket.io.js"></script>
+
+<div class="form-horizontal col-lg-5 container" id="room">
+    <form class="form-horizontal mb-4">
+        <input class="form-control" autocomplete="off" placeholder="Message...">
+    </form>
+    <ul></ul>
+</div>
+
+<script>
+
+    let socket = io();
+
+    let form = $('#room form');
+    let ul = $('#room ul');
+
+
+    socket.on('message', function (text) {
+        console.log(text);
+        $('<li>', {text: text}).prependTo(ul);
+    });
+
+    form.submit(function () {
+        let input = $(this).find(':input');
+        let text = input.val();
+        input.val('');
+
+        socket.emit('message', text, function (data) {
+            alert(data);
+            $('<li>', {text: text}).prependTo(ul);
+        });
+
+        return false;
+    });
+
+</script>

@@ -52,6 +52,11 @@
                     <a class="nav-link" href="/battle">Battle</a>
                 </li>
                 <% } %>
+                <% if (user) {%>
+                <li class="nav-item">
+                    <a class="nav-link" href="/chat">Chat</a>
+                </li>
+                <% } %>
             </ul>
             <!--<form class="form-inline my-2 my-lg-0">-->
                 <!--<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">-->
@@ -70,7 +75,7 @@
 <!-- Page Content -->
 <div class="container text-center">
         <div class="container">
-            <div class="mt-4">
+            <div class="mt-4 mb-4">
                 <h1><%=blocks.title%></h1>
             </div>
         </div>

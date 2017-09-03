@@ -61,8 +61,20 @@ require("routes")(app);
 
 serverDomain.run(function () {
 
-    http.createServer(app).listen(app.get('port'), function () {
+    let server = http.createServer(app);
+    server.listen(app.get('port'), function () {
         log.info("Express server listening on port " + app.get('port'));
+    });
+
+
+    let io = require('socket.io').listen(server);
+    io.sockets.on('connection', function (socket) {
+
+        socket.on('message', function (text, callback) {
+            socket.broadcast.emit('message', text);
+            callback("back");
+        });
+
     });
 
 });
