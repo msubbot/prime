@@ -12,10 +12,8 @@ let bodyParser = require('body-parser');
 let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let session = require('express-session');
-let MongoStore = require('connect-mongo')(session);
-let mongoose = require('libs/mongoose');
-let mongoose_store = new MongoStore({mongooseConnection: mongoose.connection});
 
+let sessionStore = require('./libs/sessionStore');
 
 // Custom modules
 let config = require('config');
@@ -52,7 +50,7 @@ app.use(session ({
     secret: config.get("session:secret"),
     key: config.get("session:key"),
     cookie: config.get("session:cookie"),
-    store: mongoose_store
+    store: sessionStore
 }));
 
 app.use(require('./middleware/loadUser'));

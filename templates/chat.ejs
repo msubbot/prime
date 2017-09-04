@@ -22,8 +22,14 @@
 
 
     socket
-        .on('message', function (text) {
-            printMessage(text)
+        .on('message', function (username, message) {
+            printMessage(username + ": " + message);
+        })
+        .on('join', function (username) {
+          printStatus(username + " join the chat.");
+        })
+        .on('leave', function (username) {
+            printStatus(username + ' leave the chat.')
         })
         .on('connect', function () {
             printStatus('Connection establishing.');
