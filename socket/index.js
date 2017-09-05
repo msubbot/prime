@@ -88,13 +88,10 @@ module.exports = function (server) {
 			});
 	});
 
-  io.sockets.on('connection', (socket) => {
+  io.on('connection', function (socket) {
+  		debugger;
 
-  		let usernameFIX = "someone";
-
-  		let username = usernameFIX;
-
-			//let bug = socket.handshake.user.get('username');
+  		let username  = socket.client.request.user.get('username');
 
   		socket.broadcast.emit('join', username);
 
