@@ -7,7 +7,7 @@
     <form class="form-horizontal mb-4">
         <input class="form-control" autocomplete="off" placeholder="Message...">
     </form>
-    <ul class="list-unstyled"></ul>
+    <ul class="list-unstyled list-group"></ul>
 </div>
 
 <script>
@@ -23,10 +23,10 @@
 
     socket
         .on('message', function (username, message) {
-            printMessage(username + ": " + message);
+            printMessage(username, message);
         })
         .on('join', function (username) {
-          printStatus(username + " join the chat.");
+            printStatus(username + " join the chat.");
         })
         .on('leave', function (username) {
             printStatus(username + ' leave the chat.')
@@ -51,9 +51,9 @@
     }
 
     function sendMessage() {
-          let text = input.val();
-          socket.emit('message', text, function () {
-            printMessage(text);
+          let message = input.val();
+          socket.emit('message', message, function () {
+            printMessage("Me ", message);
           });
 
           input.val('');
@@ -61,11 +61,14 @@
     }
 
 
-    function printMessage (text) {
-        $('<li>', {text: text}).prependTo(ul);
+    function printMessage (username, message) {
+        let item = $('<li>').addClass('list-group-item').prependTo(ul);
+        let temp = $('<div>').addClass("d-flex w-100 justify-content-between").appendTo(item);
+        $('<h5>').text(username).appendTo(temp);
+        $('<p>').text(message).addClass('mb-1').appendTo(item);
     }
 
     function printStatus (status) {
-        $('<li>').append($('<i>').text(status)).prependTo(ul);
+        $('<li>').append($('<i>').text(status)).addClass('text-center mb-2 mt-2').prependTo(ul);
     }
 </script>
