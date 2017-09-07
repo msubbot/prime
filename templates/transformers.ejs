@@ -1,11 +1,81 @@
 <% layout('/layout/page')%>
-<% block('title', 'All transformers')%>
+<% block('title', 'Transformers')%>
 
 <div class="container">
-    <p>Transformers exist: </p>
-    <ul id="transformers">
 
-            <li><%= JSON.stringify(data) %></li>
+    <%
+    if(user !== null) {
+        var userTransformers = new Array(0);
+        for(let i=0; i < data.length; i++) {
+            if (data[i].owner === user.username)
+                userTransformers.push(data[i]);
+        }
+        if (userTransformers.length != 0) {
+        %>
+    <h2 class="mt-3">Yours transformers: </h2>
+    <table class="table">
+        <thead class="thead-inverse">
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Health</th>
+            <th>Attack</th>
+            <th>Owner</th>
+        </tr>
+        </thead>
+        <tbody>
+        <%
+        for(var i=0, ind = 0; i < userTransformers.length; i++) {
+            if(userTransformers[i].owner == user.username) {
+                ind++;
+        %>
+        <tr>
+            <td><%= userTransformers[i].name %></td>
+            <td><%= userTransformers[i].type %></td>
+            <td><%= userTransformers[i].health %></td>
+            <td><%= userTransformers[i].attack %></td>
+            <td><%= userTransformers[i].owner %></td>
+        </tr>
+        </tbody>
+            <%}
+        }%>
+    </table>
+    <% }
+    } else { %>
+    <div class="jumbotron">
+        <h1>Ooops! No yours transformers!</h1>
+        <p class="lead">You not created your own transforemers yet!</p>
+        <% if(user !== null) { %>
+        <a class="btn btn-primary btn-large" href="/creation">Create now</a>
+        <% }  else {  %>
+        <a class="btn btn-primary btn-large" href="/login">Login and create</a>
+        <% } %>
+    </div>
+    <% }%>
 
-    </ul>
+    <h2 class="mt-3">Transformers exist: </h2>
+    <table class="table">
+        <thead class="thead-inverse">
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Health</th>
+            <th>Attack</th>
+            <th>Owner</th>
+        </tr>
+        </thead>
+        <tbody>
+            <% for(var i=0; i < data.length; i++) {%>
+            <% if(data[i].owner) {%>
+                <tr>
+                    <td><%= data[i].name %></td>
+                    <td><%= data[i].type %></td>
+                    <td><%= data[i].health %></td>
+                    <td><%= data[i].attack %></td>
+                    <td><%= data[i].owner %></td>
+                </tr>
+            <% }
+            } %>
+        </tbody>
+    </table>
 </div>

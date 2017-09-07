@@ -5,7 +5,7 @@
  */
 let User = require('../../models/user').User;
 let async = require('async');
-let HttpError = require('../../error');
+let HttpError = require('../../error').HttpError;
 let AuthError = require('../../models/user').AuthError;
 
 module.exports = function (app) {
@@ -20,7 +20,7 @@ module.exports = function (app) {
        User.authorize(username, password, function (err, user) {
            if(err) {
                if (err instanceof AuthError) {
-                   return next(new HttpError(403, err.message));
+                   return next(new HttpError(403, err));
                } else {
                    return next(err);
                }

@@ -1,0 +1,74 @@
+<% layout('/layout/page')%>
+<% block('title', 'Chat')%>
+
+<script src="/vendor/socket.io-client/dist/socket.io.js"></script>
+
+<div class="form-horizontal col-lg-5 container" id="room">
+    <form class="form-horizontal mb-4">
+        <input class="form-control" autocomplete="off" placeholder="Message...">
+    </form>
+    <ul class="list-unstyled list-group"></ul>
+</div>
+
+<script>
+
+    let socket = io('', {
+      reconnect: false
+    });
+
+    let input = $('#room input');
+    let form = $('#room form');
+    let ul = $('#room ul');
+
+
+    socket
+        .on('message', function (username, message) {
+            printMessage(username, message);
+        })
+        .on('join', function (username) {
+            printStatus(username + " join the chat.");
+        })
+        .on('leave', function (username) {
+            printStatus(username + ' leave the chat.')
+        })
+        .on('connect', function () {
+            printStatus('Connection establishing.');
+            form.on('submit', sendMessage);
+            input.prop('disabled', false);
+        })
+        .on('disconnect', function () {
+            printStatus('Connection failed.');
+            form.on('submit', sendMessage());
+            input.prop('disabled', true);
+            setTimeout(reconnect(), 1000);
+        })
+
+    function reconnect () {
+        socket.once('connect_error', function () {
+            setTimeout(reconnect, 1000);
+        });
+        socket.connect();
+    }
+
+    function sendMessage() {
+          let message = input.val();
+          socket.emit('message', message, function () {
+            printMessage("Me ", message);
+          });
+
+          input.val('');
+          return false;
+    }
+
+
+    function printMessage (username, message) {
+        let item = $('<li>').addClass('list-group-item').prependTo(ul);
+        let temp = $('<div>').addClass("d-flex w-100 justify-content-between").appendTo(item);
+        $('<h5>').text(username).appendTo(temp);
+        $('<p>').text(message).addClass('mb-1').appendTo(item);
+    }
+
+    function printStatus (status) {
+        $('<li>').append($('<i>').text(status)).addClass('text-center mb-2 mt-2').prependTo(ul);
+    }
+</script>

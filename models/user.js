@@ -6,6 +6,7 @@
 
 let crypto = require('crypto');
 let async = require('async');
+let HttpError = require('../error').HttpError;
 
 let mongoose = require("mongoose");
 Schema = mongoose.Schema;
@@ -74,6 +75,8 @@ schema.statics.authorize = function (username, password, callback) {
 
 exports.User = mongoose.model('User', schema);
 
+
+//TODO replace error
 let util = require('util');
 let http = require('http');
 
